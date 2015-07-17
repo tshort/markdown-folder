@@ -1,0 +1,21 @@
+{
+  "name": "markdown-folder",
+  "main": "./lib/markdown-folder",
+  "version": "0.0.0",
+  "description": "A short description of your package",
+  "keywords": [
+  ],
+  "activationCommands": {
+    "atom-workspace": ["markdown-folder:fold",
+      "markdown-folder:unfold",
+      "markdown-folder:foldall",
+      "markdown-folder:unfoldall"]
+  },
+  "repository": "https://github.com/atom/markdown-folder",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {
+  }
+}
