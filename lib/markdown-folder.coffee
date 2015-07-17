@@ -57,9 +57,9 @@ module.exports = MarkdownFolder =
 
       toggleFold = (range) ->
         console.log "Found match in range " + range
-        editor.setSelectedBufferRange(new Range(new Point(startrow + 1 , 0), new Point(range.end.row - 1, 0)))
+        editor.setSelectedBufferRange(new Range(new Point(startrow, 0), new Point(range.end.row - 1, 0)))
         if action == 'unfold'
-          for row in [startrow + 1..range.end.row - 1]
+          for row in [startrow..range.end.row - 1]
             console.log "trying to unfold row " + row
             editor.unfoldBufferRow(row)
         else
@@ -68,13 +68,13 @@ module.exports = MarkdownFolder =
         editor.setCursorBufferPosition(new Point(startrow, 0))
 
       scanCallback = (scanresult) ->
-        console.log "Found " + scanresult.matchText + " at " + scanresult.range + " firstfoldedrow = " + (startrow + 1)
+        console.log "Found " + scanresult.matchText + " at " + scanresult.range + " firstfoldedrow = " + (startrow)
         toggleFold(scanresult.range)
         nextmatchfound = true
 
       editor.scanInBufferRange(nextmatch, searchrange, scanCallback)
       if !nextmatchfound
-        toggleFold(new Range(new Point(startrow + 1, 0),new Point(lastrowindex,lastrowtext.length - 1)))
+        toggleFold(new Range(new Point(startrow, 0),new Point(lastrowindex,lastrowtext.length - 1)))
     else
       console.log "Does not begin with #"
 
