@@ -45,18 +45,21 @@ module.exports = MarkdownFolder =
     startrow ||= editor.getCursorBufferPosition().row
     linetext = editor.lineTextForBufferRow(startrow)
     thematch = linetext.match(/^(#+)/)
+    nextmatchfound = false
 
     if thematch
+      lastrowindex = editor.getLastBufferRow()
+      lastrowtext = editor.lineTextForBufferRow(lastrowindex)
       nextmatch = @getNextMatcher(thematch[1])
       console.log "nextmatch = " + nextmatch
       # todo read until last EOL
-      searchrange = new Range(new Point(startrow + 1 , 0), new Point(editor.getLastBufferRow(),0))
+      searchrange = new Range(new Point(startrow + 1 , 0), new Point(lastrowindex,lastrowtext.length - 1))
 
-      toggleFold = (stuff) ->
-        console.log "Found " + stuff.matchText + " at " + stuff.range + " firstfoldedrow = " + (startrow + 1)
-        editor.setSelectedBufferRange(new Range(new Point(startrow + 1 , 0), new Point(stuff.range.end.row - 1,0)))
+      toggleFold = (range) ->
+        console.log "Found match in range " + range
+        editor.setSelectedBufferRange(new Range(new Point(startrow + 1 , 0), new Point(range.end.row - 1, 0)))
         if action == 'unfold'
-          for row in [startrow + 1..stuff.range.end.row - 1]
+          for row in [startrow + 1..range.end.row - 1]
             console.log "trying to unfold row " + row
             editor.unfoldBufferRow(row)
         else
@@ -64,8 +67,14 @@ module.exports = MarkdownFolder =
           editor.foldSelectedLines()
         editor.setCursorBufferPosition(new Point(startrow, 0))
 
-      # todo handle folding of last section
-      editor.scanInBufferRange(nextmatch, [new Point(startrow + 1 , 0), new Point(editor.getLastBufferRow(),0)], toggleFold)
+      scanCallback = (scanresult) ->
+        console.log "Found " + scanresult.matchText + " at " + scanresult.range + " firstfoldedrow = " + (startrow + 1)
+        toggleFold(scanresult.range)
+        nextmatchfound = true
+
+      editor.scanInBufferRange(nextmatch, searchrange, scanCallback)
+      if !nextmatchfound
+        toggleFold(new Range(new Point(startrow + 1, 0),new Point(lastrowindex,lastrowtext.length - 1)))
     else
       console.log "Does not begin with #"
 
