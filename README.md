@@ -3,8 +3,8 @@
 Folds and unfolds markdown headings.
 
 Commands:
-  * 'ctrl-p':'mamarkdown-folder:fold: => fold heading at cursor
-  * 'ctrl-o':'mamarkdown-folder:unfold': =>: => Unhold heading at cursor
+  * 'ctrl-p':'markdown-folder:fold: => fold heading at cursor
+  * 'ctrl-o':'markdown-folder:unfold': =>: => Unhold heading at cursor
   * 'ctrl-alt-o':markdown-folder:unfoldall':: => Unfold all headings
   * 'ctrl-alt-1':markdown-folder:foldall-h1': => Fold all h1 headings
   * 'ctrl-alt-2':markdown-folder:foldall-h2': => Fold all h2 headings
