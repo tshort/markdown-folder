@@ -1,6 +1,6 @@
 # markdown-folder package
 
-Folds and unfolds markdown headings.
+Atom package that folds and unfolds markdown headings.
 
 Commands:
   * 'ctrl-p':'markdown-folder:fold: => fold heading at cursor
