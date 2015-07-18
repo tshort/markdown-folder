@@ -1,14 +1,14 @@
 {
   "name": "markdown-folder",
   "main": "./lib/markdown-folder",
-  "version": "0.0.0",
-  "description": "A short description of your package",
-  "keywords": [
+  "version": "0.1.0",
+  "description": "Folds and unfolds markdown headings",
+  "keywords": [ "markdown"
   ],
   "activationHooks": [
     "language-gfm:grammar-used"
   ],
-  "repository": "https://github.com/atom/markdown-folder",
+  "repository": "https://github.com/melke/markdown-folder",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"

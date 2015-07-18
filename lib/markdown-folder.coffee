@@ -22,22 +22,20 @@ module.exports = MarkdownFolder =
     @subscriptions.dispose()
 
   fold: ->
-    @folderer('fold')
+    @folderer('fold', -1)
 
   unfold: ->
-    @folderer('unfold')
+    @folderer('unfold', -1)
 
   foldall: (matcher) ->
-    console.log "foldingall"
-
     editor = atom.workspace.getActiveTextEditor()
     for linenumber in [editor.getLastBufferRow()..0]
       linetext = editor.lineTextForBufferRow(linenumber)
       if linetext.match(matcher)
-        console.log "Will fold from line " + linetext
         @folderer('fold', linenumber)
 
   unfoldall: ->
+    editor = atom.workspace.getActiveTextEditor()
     editor.unfoldAll()
 
   getNextMatcher: (matcher) ->
@@ -52,7 +50,8 @@ module.exports = MarkdownFolder =
 
   folderer: (action, startrow) ->
     editor = atom.workspace.getActiveTextEditor()
-    startrow ||= editor.getCursorBufferPosition().row
+    if startrow == -1
+      startrow = editor.getCursorBufferPosition().row
     linetext = editor.lineTextForBufferRow(startrow)
     thematch = linetext.match(/^(#+)/)
     nextmatchfound = false
@@ -61,23 +60,18 @@ module.exports = MarkdownFolder =
       lastrowindex = editor.getLastBufferRow()
       lastrowtext = editor.lineTextForBufferRow(lastrowindex)
       nextmatch = @getNextMatcher(thematch[1])
-      console.log "nextmatch = " + nextmatch
       searchrange = new Range(new Point(startrow + 1 , 0), new Point(lastrowindex,lastrowtext.length - 1))
 
       toggleFold = (range) ->
-        console.log "Found match in range " + range
         editor.setSelectedBufferRange(new Range(new Point(startrow, 0), new Point(range.end.row - 1, 0)))
         if action == 'unfold'
           for row in [startrow..range.end.row - 1]
-            console.log "trying to unfold row " + row
             editor.unfoldBufferRow(row)
         else
-          console.log "folding all selected lines"
           editor.foldSelectedLines()
         editor.setCursorBufferPosition(new Point(startrow, 0))
 
       scanCallback = (scanresult) ->
-        console.log "Found " + scanresult.matchText + " at " + scanresult.range + " firstfoldedrow = " + (startrow)
         toggleFold(scanresult.range)
         nextmatchfound = true
 

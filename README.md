@@ -1,5 +1,13 @@
 # markdown-folder package
 
-A short description of your package.
+Folds and unfolds markdown headings.
 
-![A screenshot of your package](https://f.cloud.github.com/assets/69169/2290250/c35d867a-a017-11e3-86be-cd7c5bf3ff9b.gif)
+Commands:
+  * 'ctrl-p':'mamarkdown-folder:fold: => fold heading at cursor
+  * 'ctrl-o':'mamarkdown-folder:unfold': =>: => Unhold heading at cursor
+  * 'ctrl-alt-o':markdown-folder:unfoldall':: => Unfold all headings
+  * 'ctrl-alt-1':markdown-folder:foldall-h1': => Fold all h1 headings
+  * 'ctrl-alt-2':markdown-folder:foldall-h2': => Fold all h2 headings
+  * 'ctrl-alt-3':markdown-folder:foldall-h3': => Fold all h3 headings
+  * 'ctrl-alt-4':markdown-folder:foldall-h4': => Fold all h4 headings
+  * 'ctrl-alt-5':markdown-folder:foldall-h5': => Fold all h5 headings
