@@ -11,7 +11,11 @@ module.exports = MarkdownFolder =
     # Register command that toggles this view
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:fold': => @fold()
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:unfold': => @unfold()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall': => @foldall()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h1': => @foldall(/^(#+)/)
+    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h2': => @foldall(/^(##+)/)
+    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h3': => @foldall(/^(###+)/)
+    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h4': => @foldall(/^(####+)/)
+    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h5': => @foldall(/^(#####+)/)
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:unfoldall': => @unfoldall()
 
   deactivate: ->
@@ -23,11 +27,17 @@ module.exports = MarkdownFolder =
   unfold: ->
     @folderer('unfold')
 
-  foldall: ->
+  foldall: (matcher) ->
     console.log "foldingall"
 
-  unfoldall: ->
     editor = atom.workspace.getActiveTextEditor()
+    for linenumber in [editor.getLastBufferRow()..0]
+      linetext = editor.lineTextForBufferRow(linenumber)
+      if linetext.match(matcher)
+        console.log "Will fold from line " + linetext
+        @folderer('fold', linenumber)
+
+  unfoldall: ->
     editor.unfoldAll()
 
   getNextMatcher: (matcher) ->
@@ -52,7 +62,6 @@ module.exports = MarkdownFolder =
       lastrowtext = editor.lineTextForBufferRow(lastrowindex)
       nextmatch = @getNextMatcher(thematch[1])
       console.log "nextmatch = " + nextmatch
-      # todo read until last EOL
       searchrange = new Range(new Point(startrow + 1 , 0), new Point(lastrowindex,lastrowtext.length - 1))
 
       toggleFold = (range) ->
@@ -73,9 +82,6 @@ module.exports = MarkdownFolder =
         nextmatchfound = true
 
       editor.scanInBufferRange(nextmatch, searchrange, scanCallback)
+
       if !nextmatchfound
         toggleFold(new Range(new Point(startrow, 0),new Point(lastrowindex,lastrowtext.length - 1)))
-    else
-      console.log "Does not begin with #"
-
-    console.log 'startrow = ' + startrow + " linetext = " + linetext

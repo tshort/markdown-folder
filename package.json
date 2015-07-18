@@ -5,12 +5,9 @@
   "description": "A short description of your package",
   "keywords": [
   ],
-  "activationCommands": {
-    "atom-workspace": ["markdown-folder:fold",
-      "markdown-folder:unfold",
-      "markdown-folder:foldall",
-      "markdown-folder:unfoldall"]
-  },
+  "activationHooks": [
+    "language-gfm:grammar-used"
+  ],
   "repository": "https://github.com/atom/markdown-folder",
   "license": "MIT",
   "engines": {
