@@ -1,7 +1,7 @@
 {
   "name": "markdown-folder",
   "main": "./lib/markdown-folder",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Folds and unfolds markdown headings",
   "keywords": [ "markdown"
   ],

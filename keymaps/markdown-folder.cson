@@ -12,9 +12,8 @@
 # are most appropriate for all individuals. So, set up your own bindings or use the follwing bindings in your
 # personal settings
 # 'atom-workspace':
-#   'ctrl-p': 'markdown-folder:fold'
-#   'ctrl-o': 'markdown-folder:unfold'
-#   'ctrl-alt-o': 'markdown-folder:unfoldall'
+#   'alt-t': 'markdown-folder:toggle'
+#   'ctrl-alt-t': 'markdown-folder:unfoldall'
 #   'ctrl-alt-1': 'markdown-folder:foldall-h1'
 #   'ctrl-alt-2': 'markdown-folder:foldall-h2'
 #   'ctrl-alt-3': 'markdown-folder:foldall-h3'

@@ -9,8 +9,7 @@ module.exports = MarkdownFolder =
     @subscriptions = new CompositeDisposable
 
     # Register command that toggles this view
-    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:fold': => @fold()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:unfold': => @unfold()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:toggle': => @toggle()
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h1': => @foldall(/^(#+)/)
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h2': => @foldall(/^(##+)/)
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h3': => @foldall(/^(###+)/)
@@ -21,11 +20,8 @@ module.exports = MarkdownFolder =
   deactivate: ->
     @subscriptions.dispose()
 
-  fold: ->
-    @folderer('fold', -1)
-
-  unfold: ->
-    @folderer('unfold', -1)
+  toggle: ->
+    @folderer('toggle', -1)
 
   foldall: (matcher) ->
     editor = atom.workspace.getActiveTextEditor()
@@ -50,8 +46,16 @@ module.exports = MarkdownFolder =
 
   folderer: (action, startrow) ->
     editor = atom.workspace.getActiveTextEditor()
+
     if startrow == -1
       startrow = editor.getCursorBufferPosition().row
+
+    if action == 'toggle'
+      if editor.isFoldedAtBufferRow(startrow + 1)
+        action = 'unfold'
+      else
+        action = 'fold'
+
     linetext = editor.lineTextForBufferRow(startrow)
     thematch = linetext.match(/^(#+)/)
     nextmatchfound = false
@@ -63,11 +67,18 @@ module.exports = MarkdownFolder =
       searchrange = new Range(new Point(startrow + 1 , 0), new Point(lastrowindex,lastrowtext.length - 1))
 
       toggleFold = (range) ->
-        editor.setSelectedBufferRange(new Range(new Point(startrow, 0), new Point(range.end.row - 1, 0)))
         if action == 'unfold'
           for row in [startrow..range.end.row - 1]
             editor.unfoldBufferRow(row)
         else
+          # Don't fold empty lines. Go backwards and check
+          lastrowtofold = range.end.row - 1
+          for linenr in [lastrowtofold..startrow + 1]
+            if editor.lineTextForBufferRow(linenr).match(/^\s*$/) # only whitespace
+              lastrowtofold--
+            else
+              break
+          editor.setSelectedBufferRange(new Range(new Point(startrow, 0), new Point(lastrowtofold, 0)))
           editor.foldSelectedLines()
         editor.setCursorBufferPosition(new Point(startrow, 0))
 
