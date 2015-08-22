@@ -6,6 +6,7 @@ Note that the headings must use the hash signs. That is, underlining with equal 
 There must also be some whitespace between the hash sign and the heading text. Examples that DO work:
 
 `# My First Heading`
+
 `## My Second Heading`
 
 Commands:
