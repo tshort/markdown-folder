@@ -15,6 +15,30 @@
         {
           'label': 'Toggle'
           'command': 'markdown-folder:toggle'
+        },
+        {
+          'label': 'Unfold all'
+          'command': 'markdown-folder:unfoldall'
+        },
+        {
+          'label': 'Fold all H1'
+          'command': 'markdown-folder:foldall-h1'
+        },
+        {
+          'label': 'Fold all H2'
+          'command': 'markdown-folder:foldall-h2'
+        },
+        {
+          'label': 'Fold all H3'
+          'command': 'markdown-folder:foldall-h3'
+        },
+        {
+          'label': 'Fold all H4'
+          'command': 'markdown-folder:foldall-h4'
+        },
+        {
+          'label': 'Fold all H5'
+          'command': 'markdown-folder:foldall-h5'
         }
       ]
     ]
