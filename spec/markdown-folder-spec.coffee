@@ -6,15 +6,17 @@ MarkdownFolder = require '../lib/markdown-folder'
 # or `fdescribe`). Remove the `f` to unfocus the block.
 
 describe "MarkdownFolder", ->
-  [workspaceElement, activationPromise] = []
+  [workspaceElement] = []
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
-    activationPromise = atom.packages.activatePackage('markdown-folder')
     waitsForPromise ->
-      activationPromise
+      atom.packages.activatePackage('language-gfm')
     waitsForPromise ->
-      atom.workspace.open('test.md')
+      Promise.all [
+        atom.packages.activatePackage('markdown-folder')
+        atom.workspace.open('test.md')
+      ]
 
   describe "when not folding anything", ->
     it "it should be 14 rows in both screen and buffer", ->
