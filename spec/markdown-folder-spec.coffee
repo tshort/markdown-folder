@@ -134,6 +134,22 @@ describe "MarkdownFolder", ->
       expect(editor.getScreenLineCount()).toBe 9
       atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
       expect(editor.getScreenLineCount()).toBe 14
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
+      expect(editor.getScreenLineCount()).toBe 5
+
+
+  describe "when moving to and cycling h1-1-h2-1-h3-1", ->
+    it "it should be 13 rows on screen then 14 as cycled", ->
+      editor = atom.workspace.getActiveTextEditor()
+      editor.setCursorBufferPosition([4,0])
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
+      expect(editor.getPath()).toContain 'test.md'
+      expect(editor.getLineCount()).toBe 14
+      expect(editor.getScreenLineCount()).toBe 13
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
+      expect(editor.getScreenLineCount()).toBe 14
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
+      expect(editor.getScreenLineCount()).toBe 13
 
   describe "when cycling the whole buffer", ->
     it "it should be 4 rows on screen then 8 then 14 as cycled", ->
@@ -146,3 +162,5 @@ describe "MarkdownFolder", ->
       expect(editor.getScreenLineCount()).toBe 8
       atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
       expect(editor.getScreenLineCount()).toBe 14
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getScreenLineCount()).toBe 4

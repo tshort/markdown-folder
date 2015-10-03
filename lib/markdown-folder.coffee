@@ -11,7 +11,7 @@ module.exports = MarkdownFolder =
     # Register command that toggles this view
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:toggle': => @toggle()
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:cycle': => @cycle()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:cycleall': => @toggleall()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:cycleall': => @cycleall()
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h1': => @foldall(/^(#+)/)
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h2': => @foldall(/^(##+)/)
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h3': => @foldall(/^(###+)/)
@@ -28,7 +28,7 @@ module.exports = MarkdownFolder =
   cycle: ->
     @folderer('cycle', -1)
 
-  toggleall: ->
+  cycleall: ->
     editor = atom.workspace.getActiveTextEditor()
     if typeof editor.__markdownfolder_nextaction == "undefined"
       action = 'fold'

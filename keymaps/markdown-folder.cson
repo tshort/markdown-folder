@@ -13,7 +13,7 @@
 # personal settings
 # 'atom-workspace':
 #   'alt-c': 'markdown-folder:cycle'
-#   'shift-ctrl-c': 'markdown-folder:cycleall'
+#   'ctrl-alt-c': 'markdown-folder:cycleall'
 #   'alt-t': 'markdown-folder:toggle'
 #   'ctrl-alt-t': 'markdown-folder:unfoldall'
 #   'ctrl-alt-1': 'markdown-folder:foldall-h1'
