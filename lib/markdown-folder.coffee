@@ -10,6 +10,8 @@ module.exports = MarkdownFolder =
 
     # Register command that toggles this view
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:toggle': => @toggle()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:cycle': => @cycle()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:cycleall': => @toggleall()
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h1': => @foldall(/^(#+)/)
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h2': => @foldall(/^(##+)/)
     @subscriptions.add atom.commands.add 'atom-workspace', 'markdown-folder:foldall-h3': => @foldall(/^(###+)/)
@@ -22,6 +24,32 @@ module.exports = MarkdownFolder =
 
   toggle: ->
     @folderer('toggle', -1)
+
+  cycle: ->
+    @folderer('cycle', -1)
+
+  toggleall: ->
+    editor = atom.workspace.getActiveTextEditor()
+    if typeof editor.__markdownfolder_nextaction == "undefined"
+      action = 'fold'
+    else
+      action = editor.__markdownfolder_nextaction
+    if action == 'fold'
+      @foldall(/^#\s/)
+    else if action == 'unfold'
+      editor.unfoldAll()
+    else   # show headings
+      for linenumber in [editor.getLastBufferRow()..0]
+        linetext = editor.lineTextForBufferRow(linenumber)
+        if linetext.match(/^#\s/)
+          @folderer('showheadings', linenumber)
+    if action == 'fold'
+      editor.__markdownfolder_nextaction = 'showheadings'
+    else if action == 'showheadings'
+      editor.__markdownfolder_nextaction = 'unfold'
+    else
+      editor.__markdownfolder_nextaction = 'fold'
+
 
   foldall: (matcher) ->
     editor = atom.workspace.getActiveTextEditor()
@@ -67,10 +95,46 @@ module.exports = MarkdownFolder =
       searchrange = new Range(new Point(startrow + 1 , 0), new Point(lastrowindex,lastrowtext.length - 1))
 
       toggleFold = (range) ->
-        if action == 'unfold'
-          for row in [startrow..range.end.row - 1]
-            editor.unfoldBufferRow(row)
-        else
+        if action == 'cycle'
+          # Logic:
+          #   if fully collapsed and has headings, show headings
+          #   else if any nonheaders are collapsed, collapse all
+          #   else expand all (everything that's collapsed is a heading or if it doesn't have any headings)
+          lastrow = range.end.row - 1
+          for linenr in [lastrow..startrow + 1]
+            if editor.lineTextForBufferRow(linenr).match(/^\s*$/) # only whitespace
+              lastrow--
+            else
+              break
+          numheadings = 0
+          numfolded = 0
+          for row in [(startrow + 1)..lastrow]
+            if editor.isFoldedAtBufferRow(row)  # count folded rows
+              numfolded++
+            if editor.lineTextForBufferRow(row).match(/^#+\s/)  # count headings
+              numheadings++
+          numvisibleheadings = 0
+          screenstartrow = editor.screenPositionForBufferPosition(new Point(startrow, 0)).row
+          screenendrow   = editor.screenPositionForBufferPosition(new Point(lastrow, 0)).row
+          numvisiblerows = screenendrow - screenstartrow
+          for screenrow in [screenstartrow..screenendrow]
+            if editor.lineTextForScreenRow(screenrow).match(/^#+\s/)  # count visible headings
+              numvisibleheadings++
+          if numvisiblerows == 0   # fully folded
+            if numheadings > 0
+              action = 'showheadings'
+            else
+              action = 'unfold'
+          else if numvisiblerows == numheadings &&   # just headings shown
+                  numheadings == numvisibleheadings - 1 &&
+                  numfolded > 0
+            action = 'unfold'
+          else
+            action = 'fold'
+
+        for row in [range.end.row - 1..startrow]
+          editor.unfoldBufferRow(row)
+        if action != 'unfold'
           # Don't fold empty lines. Go backwards and check
           lastrowtofold = range.end.row - 1
           for linenr in [lastrowtofold..startrow + 1]
@@ -78,7 +142,19 @@ module.exports = MarkdownFolder =
               lastrowtofold--
             else
               break
-          editor.setSelectedBufferRange(new Range(new Point(startrow, 0), new Point(lastrowtofold, 0)))
+          if action == 'showheadings'     # make several ranges
+            ranges = []
+            for linenr in [lastrowtofold..startrow]
+              if editor.lineTextForBufferRow(linenr).match(/^#+\s/) # a heading
+                if lastrowtofold - linenr > 0
+                  ranges.push (new Range(new Point(linenr, 0), new Point(lastrowtofold, 0)))
+                lastrowtofold = linenr - 1
+            if lastrowtofold - startrow > 1
+              ranges.push (new Range(new Point(startrow, 0), new Point(lastrowtofold, 0)))
+            if ranges.length > 0
+              editor.setSelectedBufferRanges(ranges)
+          else
+            editor.setSelectedBufferRange(new Range(new Point(startrow, 0), new Point(lastrowtofold, 0)))
           editor.foldSelectedLines()
         editor.setCursorBufferPosition(new Point(startrow, 0))
 

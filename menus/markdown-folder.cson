@@ -2,6 +2,10 @@
 'context-menu':
   'atom-text-editor': [
     {
+      'label': 'Cycle markdown-folder'
+      'command': 'markdown-folder:cycle'
+    },
+    {
       'label': 'Toggle markdown-folder'
       'command': 'markdown-folder:toggle'
     }
@@ -12,6 +16,14 @@
     'submenu': [
       'label': 'markdown-folder'
       'submenu': [
+        {
+          'label': 'Cycle'
+          'command': 'markdown-folder:cycle'
+        },
+        {
+          'label': 'Cycle all'
+          'command': 'markdown-folder:cycleall'
+        },
         {
           'label': 'Toggle'
           'command': 'markdown-folder:toggle'
