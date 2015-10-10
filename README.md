@@ -39,3 +39,8 @@ Suggested bindings (not implemented, use in your personal settings if you like):
   'ctrl-alt-4': 'markdown-folder:foldall-h4'
   'ctrl-alt-5': 'markdown-folder:foldall-h5'
 ```
+
+Here is an example of an [mdpad](https://github.com/tshort/mdpad/tree/gh-pages)
+markdown file with headings and many fenced code blocks.
+
+![Folding in action](https://github.com/tshort/markdown-folder/raw/master/markdown-folder-mdpad.gif)
