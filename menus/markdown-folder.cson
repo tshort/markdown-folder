@@ -17,16 +17,28 @@
       'label': 'markdown-folder'
       'submenu': [
         {
-          'label': 'Cycle'
+          'label': 'Toggle heading / fenced code block'
+          'command': 'markdown-folder:dwim-toggle'
+        },
+        {
+          'label': 'Cycle heading'
           'command': 'markdown-folder:cycle'
         },
         {
-          'label': 'Cycle all'
+          'label': 'Cycle all headings'
           'command': 'markdown-folder:cycleall'
         },
         {
-          'label': 'Toggle'
+          'label': 'Toggle heading'
           'command': 'markdown-folder:toggle'
+        },
+        {
+          'label': 'Toggle fenced code block'
+          'command': 'markdown-folder:togglefenced'
+        },
+        {
+          'label': 'Toggle all fenced code blocks'
+          'command': 'markdown-folder:toggleallfenced'
         },
         {
           'label': 'Unfold all'
