@@ -10,7 +10,7 @@
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'markdown-folder'
+      'label': 'Markdown Folder'
       'submenu': [
         {
           'label': 'Toggle'
