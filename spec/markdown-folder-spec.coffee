@@ -10,12 +10,14 @@ describe "MarkdownFolder", ->
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
+
     waitsForPromise ->
-      atom.packages.activatePackage('language-gfm')
+      atom.workspace.open('test.md')
+
     waitsForPromise ->
       Promise.all [
         atom.packages.activatePackage('markdown-folder')
-        atom.workspace.open('test.md')
+        atom.commands.dispatch workspaceElement, 'markdown-folder:unfoldall'
       ]
 
   describe "when not folding anything", ->

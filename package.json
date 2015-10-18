@@ -6,9 +6,17 @@
   "keywords": [
     "markdown"
   ],
-  "activationHooks": [
-    "language-gfm:grammar-used"
-  ],
+  "activationCommands": {
+    "atom-workspace": [
+      "markdown-folder:toggle",
+      "markdown-folder:foldall-h1",
+      "markdown-folder:foldall-h2",
+      "markdown-folder:foldall-h3",
+      "markdown-folder:foldall-h4",
+      "markdown-folder:foldall-h5",
+      "markdown-folder:unfoldall"
+    ]
+  },
   "repository": "https://github.com/melke/markdown-folder",
   "license": "MIT",
   "engines": {
