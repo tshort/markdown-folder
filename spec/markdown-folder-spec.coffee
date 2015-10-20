@@ -168,16 +168,19 @@ describe "MarkdownFolder", ->
       expect(editor.getScreenLineCount()).toBe 4
 
   describe "when cycling the whole buffer and there is no h1", ->
-    it "it should cycle everything regardless" ->
+    it "it should cycle everything regardless", ->
+
       waitsForPromise ->
         atom.workspace.open('test-no-h1.md')
-        atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
-        expect(editor.getPath()).toContain 'test-no-h1.md'
-        expect(editor.getLineCount()).toBe 12
-        expect(editor.getScreenLineCount()).toBe 2
-        atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
-        expect(editor.getScreenLineCount()).toBe 6
-        atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
-        expect(editor.getScreenLineCount()).toBe 12
-        atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
-        expect(editor.getScreenLineCount()).toBe 2
+
+      editor = atom.workspace.getActiveTextEditor()
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getPath()).toContain 'test-no-h1.md'
+      expect(editor.getLineCount()).toBe 12
+      expect(editor.getScreenLineCount()).toBe 2
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getScreenLineCount()).toBe 6
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getScreenLineCount()).toBe 12
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getScreenLineCount()).toBe 2
