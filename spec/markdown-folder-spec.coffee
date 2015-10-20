@@ -127,7 +127,7 @@ describe "MarkdownFolder", ->
   describe "when moving to and cycling h1-1", ->
     it "it should be 5 rows on screen then 9 then 14 as cycled", ->
       editor = atom.workspace.getActiveTextEditor()
-      editor.setCursorBufferPosition([11,0])
+      editor.setCursorBufferPosition([0,0])
       atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
       expect(editor.getPath()).toContain 'test.md'
       expect(editor.getLineCount()).toBe 14
