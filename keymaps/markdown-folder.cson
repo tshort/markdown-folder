@@ -11,8 +11,12 @@
 # Here are some example keybindings. They are commented, because it's almost impossible to predict which bindings
 # are most appropriate for all individuals. So, set up your own bindings or use the follwing bindings in your
 # personal settings
-# 'atom-workspace':
-#   'alt-t': 'markdown-folder:toggle'
+#
+# 'atom-text-editor[data-grammar="source gfm"]:not([mini])':
+#   'tab':        'markdown-folder:dwim-toggle'
+#   'ctrl-alt-c': 'markdown-folder:cycleall'
+#   'ctrl-alt-f': 'markdown-folder:toggleallfenced'
+#   'alt-t':      'markdown-folder:toggle'
 #   'ctrl-alt-t': 'markdown-folder:unfoldall'
 #   'ctrl-alt-1': 'markdown-folder:foldall-h1'
 #   'ctrl-alt-2': 'markdown-folder:foldall-h2'

@@ -2,6 +2,10 @@
 'context-menu':
   'atom-text-editor': [
     {
+      'label': 'Cycle markdown-folder'
+      'command': 'markdown-folder:cycle'
+    },
+    {
       'label': 'Toggle markdown-folder'
       'command': 'markdown-folder:toggle'
     }
@@ -13,8 +17,28 @@
       'label': 'Markdown Folder'
       'submenu': [
         {
-          'label': 'Toggle'
+          'label': 'Toggle heading / fenced code block'
+          'command': 'markdown-folder:dwim-toggle'
+        },
+        {
+          'label': 'Cycle heading'
+          'command': 'markdown-folder:cycle'
+        },
+        {
+          'label': 'Cycle all headings'
+          'command': 'markdown-folder:cycleall'
+        },
+        {
+          'label': 'Toggle heading'
           'command': 'markdown-folder:toggle'
+        },
+        {
+          'label': 'Toggle fenced code block'
+          'command': 'markdown-folder:togglefenced'
+        },
+        {
+          'label': 'Toggle all fenced code blocks'
+          'command': 'markdown-folder:toggleallfenced'
         },
         {
           'label': 'Unfold all'
