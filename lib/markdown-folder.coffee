@@ -48,13 +48,13 @@ module.exports = MarkdownFolder =
     else
       action = editor.__markdownfolder_nextaction
     if action == 'fold'
-      @foldall(/^#\s/)
+      @foldall(/^#+\s/)
     else if action == 'unfold'
       editor.unfoldAll()
     else   # show headings
       for linenumber in [editor.getLastBufferRow()..0]
         linetext = editor.lineTextForBufferRow(linenumber)
-        if linetext.match(/^#\s/)
+        if linetext.match(/^#+\s/)
           @folderer('showheadings', linenumber)
     if action == 'fold'
       editor.__markdownfolder_nextaction = 'showheadings'
