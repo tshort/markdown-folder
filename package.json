@@ -8,7 +8,12 @@
   ],
   "activationCommands": {
     "atom-workspace": [
+      "markdown-folder:dwim-toggle",
       "markdown-folder:toggle",
+      "markdown-folder:cycle",
+      "markdown-folder:togglefenced",
+      "markdown-folder:cycleall",
+      "markdown-folder:toggleallfenced",
       "markdown-folder:foldall-h1",
       "markdown-folder:foldall-h2",
       "markdown-folder:foldall-h3",

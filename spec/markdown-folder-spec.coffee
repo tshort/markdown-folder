@@ -123,3 +123,93 @@ describe "MarkdownFolder", ->
       expect(editor.getPath()).toContain 'test.md'
       expect(editor.getLineCount()).toBe 14
       expect(editor.getScreenLineCount()).toBe 13
+
+  describe "when moving to and cycling h1-1", ->
+    it "it should be 5 rows on screen then 9 then 14 as cycled", ->
+      editor = atom.workspace.getActiveTextEditor()
+      editor.setCursorBufferPosition([0,0])
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
+      expect(editor.getPath()).toContain 'test.md'
+      expect(editor.getLineCount()).toBe 14
+      expect(editor.getScreenLineCount()).toBe 5
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
+      expect(editor.getScreenLineCount()).toBe 9
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
+      expect(editor.getScreenLineCount()).toBe 14
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
+      expect(editor.getScreenLineCount()).toBe 5
+
+
+  describe "when moving to and cycling h1-1-h2-1-h3-1", ->
+    it "it should be 13 rows on screen then 14 as cycled", ->
+      editor = atom.workspace.getActiveTextEditor()
+      editor.setCursorBufferPosition([4,0])
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
+      expect(editor.getPath()).toContain 'test.md'
+      expect(editor.getLineCount()).toBe 14
+      expect(editor.getScreenLineCount()).toBe 13
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
+      expect(editor.getScreenLineCount()).toBe 14
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycle'
+      expect(editor.getScreenLineCount()).toBe 13
+
+  describe "when cycling the whole buffer", ->
+    it "it should be 4 rows on screen then 8 then 14 as cycled", ->
+      editor = atom.workspace.getActiveTextEditor()
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getPath()).toContain 'test.md'
+      expect(editor.getLineCount()).toBe 14
+      expect(editor.getScreenLineCount()).toBe 4
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getScreenLineCount()).toBe 8
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getScreenLineCount()).toBe 14
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getScreenLineCount()).toBe 4
+
+  describe "when cycling the whole buffer and there is no h1", ->
+    beforeEach ->
+      waitsForPromise ->
+        atom.workspace.open('test-no-h1.md')
+    it "it should cycle everything regardless", ->
+      editor = atom.workspace.getActiveTextEditor()
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getPath()).toContain 'test-no-h1.md'
+      expect(editor.getLineCount()).toBe 14
+      expect(editor.getScreenLineCount()).toBe 6
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getScreenLineCount()).toBe 8
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getScreenLineCount()).toBe 14
+      atom.commands.dispatch workspaceElement, 'markdown-folder:cycleall'
+      expect(editor.getScreenLineCount()).toBe 6
+
+  describe "when toggling all fenced blocks", ->
+    beforeEach ->
+      waitsForPromise ->
+        atom.workspace.open('test-fenced.md')
+    it "it should be 13 then 23 lines on screen", ->
+      editor = atom.workspace.getActiveTextEditor()
+      atom.commands.dispatch workspaceElement, 'markdown-folder:toggleallfenced'
+      expect(editor.getPath()).toContain 'test-fenced.md'
+      expect(editor.getLineCount()).toBe 23
+      expect(editor.getScreenLineCount()).toBe 13
+      atom.commands.dispatch workspaceElement, 'markdown-folder:toggleallfenced'
+      expect(editor.getScreenLineCount()).toBe 23
+
+  describe "when toggling the first fenced block", ->
+    beforeEach ->
+      waitsForPromise ->
+        atom.workspace.open('test-fenced.md')
+    it "it should be 20 then 23 lines on screen", ->
+      editor = atom.workspace.getActiveTextEditor()
+      editor.setCursorBufferPosition([3,0])
+      atom.commands.dispatch workspaceElement, 'markdown-folder:dwim-toggle'
+      expect(editor.getPath()).toContain 'test-fenced.md'
+      expect(editor.getLineCount()).toBe 23
+      expect(editor.getScreenLineCount()).toBe 20
+      atom.commands.dispatch workspaceElement, 'markdown-folder:dwim-toggle'
+      expect(editor.getScreenLineCount()).toBe 23
+      editor.setCursorBufferPosition([0,0])
+      atom.commands.dispatch workspaceElement, 'markdown-folder:dwim-toggle'
+      expect(editor.getScreenLineCount()).toBe 5
