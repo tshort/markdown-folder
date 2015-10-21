@@ -30,8 +30,10 @@ Suggested bindings (not implemented, use in your personal settings if you like):
 ```
 'atom-text-editor[data-grammar="source gfm"]:not([mini])':
   'tab':        'markdown-folder:dwim-toggle'
+  'alt-c':      'markdown-folder:cycle'
   'ctrl-alt-c': 'markdown-folder:cycleall'
-  'ctrl-alt-f': 'markdown-folder:toggleallfenced'
+  'alt-x':      'markdown-folder:togglefenced'
+  'ctrl-alt-x': 'markdown-folder:toggleallfenced'
   'alt-t':      'markdown-folder:toggle'
   'ctrl-alt-1': 'markdown-folder:foldall-h1'
   'ctrl-alt-2': 'markdown-folder:foldall-h2'
