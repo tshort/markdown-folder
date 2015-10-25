@@ -42,7 +42,6 @@ module.exports = MarkdownFolder =
     editor = atom.workspace.getActiveTextEditor()
     row = editor.getCursorBufferPosition().row
     linetext = editor.lineTextForBufferRow(row)
-    console.log "dwim" + styleOk(row)
     if linetext.match(/^(#+)/) && styleOk(row)
       @cycle()
     else if linetext.match(/^\s*```\w+/) && styleOk2(row)
