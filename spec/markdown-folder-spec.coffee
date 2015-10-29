@@ -16,6 +16,7 @@ describe "MarkdownFolder", ->
 
     waitsForPromise ->
       Promise.all [
+        atom.packages.activatePackage('language-gfm')
         atom.packages.activatePackage('markdown-folder')
         atom.commands.dispatch workspaceElement, 'markdown-folder:unfoldall'
       ]
@@ -212,7 +213,7 @@ describe "MarkdownFolder", ->
       expect(editor.getScreenLineCount()).toBe 27
       editor.setCursorBufferPosition([0,0])
       atom.commands.dispatch workspaceElement, 'markdown-folder:dwim-toggle'
-      expect(editor.getScreenLineCount()).toBe 7
+      expect(editor.getScreenLineCount()).toBe 5
 
   describe "when cycling a heading inside a fenced block or comment", ->
     beforeEach ->
