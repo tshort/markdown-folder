@@ -16,6 +16,7 @@ describe "MarkdownFolder", ->
 
     waitsForPromise ->
       Promise.all [
+        atom.packages.activatePackage('language-gfm')
         atom.packages.activatePackage('markdown-folder')
         atom.commands.dispatch workspaceElement, 'markdown-folder:unfoldall'
       ]
@@ -188,14 +189,14 @@ describe "MarkdownFolder", ->
     beforeEach ->
       waitsForPromise ->
         atom.workspace.open('test-fenced.md')
-    it "it should be 13 then 23 lines on screen", ->
+    it "it should be 17 then 27 lines on screen", ->
       editor = atom.workspace.getActiveTextEditor()
       atom.commands.dispatch workspaceElement, 'markdown-folder:toggleallfenced'
       expect(editor.getPath()).toContain 'test-fenced.md'
-      expect(editor.getLineCount()).toBe 23
-      expect(editor.getScreenLineCount()).toBe 13
+      expect(editor.getLineCount()).toBe 27
+      expect(editor.getScreenLineCount()).toBe 17
       atom.commands.dispatch workspaceElement, 'markdown-folder:toggleallfenced'
-      expect(editor.getScreenLineCount()).toBe 23
+      expect(editor.getScreenLineCount()).toBe 27
 
   describe "when toggling the first fenced block", ->
     beforeEach ->
@@ -206,10 +207,23 @@ describe "MarkdownFolder", ->
       editor.setCursorBufferPosition([3,0])
       atom.commands.dispatch workspaceElement, 'markdown-folder:dwim-toggle'
       expect(editor.getPath()).toContain 'test-fenced.md'
-      expect(editor.getLineCount()).toBe 23
-      expect(editor.getScreenLineCount()).toBe 20
+      expect(editor.getLineCount()).toBe 27
+      expect(editor.getScreenLineCount()).toBe 24
       atom.commands.dispatch workspaceElement, 'markdown-folder:dwim-toggle'
-      expect(editor.getScreenLineCount()).toBe 23
+      expect(editor.getScreenLineCount()).toBe 27
       editor.setCursorBufferPosition([0,0])
       atom.commands.dispatch workspaceElement, 'markdown-folder:dwim-toggle'
       expect(editor.getScreenLineCount()).toBe 5
+
+  describe "when cycling a heading inside a fenced block or comment", ->
+    beforeEach ->
+      waitsForPromise ->
+        atom.workspace.open('test-fenced.md')
+    it "it should not cycle", ->
+      editor = atom.workspace.getActiveTextEditor()
+      editor.setCursorBufferPosition([12,0])
+      atom.commands.dispatch workspaceElement, 'markdown-folder:dwim-toggle'
+      expect(editor.getScreenLineCount()).toBe 27
+      editor.setCursorBufferPosition([20,0])
+      atom.commands.dispatch workspaceElement, 'markdown-folder:dwim-toggle'
+      expect(editor.getScreenLineCount()).toBe 27

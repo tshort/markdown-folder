@@ -1,5 +1,18 @@
 {CompositeDisposable, Point, Range, TextBuffer} = require 'atom'
 
+styleOk = (row) ->
+  editor = atom.workspace.getActiveTextEditor()
+  scope = editor.scopeDescriptorForBufferPosition([row,0]) 
+  !scope.scopes.some (text) -> 
+    /^(markup.code|markup.raw|comment.block)/.test text
+     
+styleOk2 = (row) ->
+  editor = atom.workspace.getActiveTextEditor()
+  scope = editor.scopeDescriptorForBufferPosition([row,0]) 
+  !scope.scopes.some (text) -> 
+    /^comment.block/.test(text)
+   
+
 module.exports = MarkdownFolder =
   subscriptions: null
 
@@ -27,10 +40,11 @@ module.exports = MarkdownFolder =
 
   dwimtoggle: (event) ->
     editor = atom.workspace.getActiveTextEditor()
-    linetext = editor.lineTextForBufferRow(editor.getCursorBufferPosition().row)
-    if linetext.match(/^(#+)/)
+    row = editor.getCursorBufferPosition().row
+    linetext = editor.lineTextForBufferRow(row)
+    if linetext.match(/^(#+)/) && styleOk(row)
       @cycle()
-    else if linetext.match(/^\s*```\w+/)
+    else if linetext.match(/^\s*```\w+/) && styleOk2(row)
       @togglefenced()
     else
       event.abortKeyBinding()
@@ -54,7 +68,7 @@ module.exports = MarkdownFolder =
     else   # show headings
       for linenumber in [editor.getLastBufferRow()..0]
         linetext = editor.lineTextForBufferRow(linenumber)
-        if linetext.match(/^#+\s/)
+        if linetext.match(/^#+\s/) && styleOk(linenumber)
           @folderer('showheadings', linenumber)
     if action == 'fold'
       editor.__markdownfolder_nextaction = 'showheadings'
@@ -124,14 +138,14 @@ module.exports = MarkdownFolder =
           for row in [(startrow + 1)..lastrow]
             if editor.isFoldedAtBufferRow(row)  # count folded rows
               numfolded++
-            if editor.lineTextForBufferRow(row).match(/^#+\s/)  # count headings
+            if editor.lineTextForBufferRow(row).match(/^#+\s/) && styleOk(row)  # count headings
               numheadings++
           numvisibleheadings = 0
           screenstartrow = editor.screenPositionForBufferPosition(new Point(startrow, 0)).row
           screenendrow   = editor.screenPositionForBufferPosition(new Point(lastrow, 0)).row
           numvisiblerows = screenendrow - screenstartrow
           for screenrow in [screenstartrow..screenendrow]
-            if editor.lineTextForScreenRow(screenrow).match(/^#+\s/)  # count visible headings
+            if editor.lineTextForScreenRow(screenrow).match(/^#+\s/) && styleOk(screenrow) # count visible headings
               numvisibleheadings++
           if numvisiblerows == 0   # fully folded
             if numheadings > 0
@@ -158,7 +172,7 @@ module.exports = MarkdownFolder =
           if action == 'showheadings'     # make several ranges
             ranges = []
             for linenr in [lastrowtofold..startrow]
-              if editor.lineTextForBufferRow(linenr).match(/^#+\s/) # a heading
+              if editor.lineTextForBufferRow(linenr).match(/^#+\s/) && styleOk(linenr) # a heading
                 if lastrowtofold - linenr > 0
                   ranges.push (new Range(new Point(linenr, 0), new Point(lastrowtofold, 0)))
                 lastrowtofold = linenr - 1
@@ -171,33 +185,28 @@ module.exports = MarkdownFolder =
           editor.foldSelectedLines()
         editor.setCursorBufferPosition(new Point(startrow, 0))
 
-      scanCallback = (scanresult) ->
-        toggleFold(scanresult.range)
-        nextmatchfound = true
-
-      editor.scanInBufferRange(nextmatch, searchrange, scanCallback)
+      for row in [startrow + 1..lastrowindex]
+        if editor.lineTextForBufferRow(row).match(nextmatch) && styleOk(row)
+          newrange = new Range(new Point(startrow, 0), new Point(row, 0))
+          toggleFold(newrange)
+          nextmatchfound = true
+          break
 
       if !nextmatchfound
         toggleFold(new Range(new Point(startrow, 0),new Point(lastrowindex,lastrowtext.length - 1)))
-
-  iscode: (scopes) ->
-    for str in scopes.getScopesArray()
-      if str.match /markup\.code\..*\.gfm/
-        return true
-    return false
 
   togglefenced: ->
     editor = atom.workspace.getActiveTextEditor()
     startpos = editor.getCursorBufferPosition()
     startrow = startpos.row
-    if !editor.lineTextForBufferRow(startrow).match(/^\s*```\w+/)
+    if !editor.lineTextForBufferRow(startrow).match(/^\s*```\w+/) || !styleOk2(startrow)
       return
     shouldunfold = editor.isFoldedAtBufferRow(startrow + 1)
     row = startrow + 1
     loop
       if shouldunfold
         editor.unfoldBufferRow(row)
-      if editor.lineTextForBufferRow(row).match(/^\s*```/)
+      if editor.lineTextForBufferRow(row).match(/^\s*```/) && styleOk2(row)
         if !shouldunfold
           editor.setSelectedBufferRange(new Range(new Point(startrow, 0), new Point(row, 0)))
           editor.foldSelectedLines()
@@ -213,8 +222,8 @@ module.exports = MarkdownFolder =
       action = editor.__markdownfolder_nextfencedaction
     lookingforfirst = true
     for row in [0..editor.getLastBufferRow()]
-      isstart = editor.lineTextForBufferRow(row).match(/^\s*```\w+/)
-      isend = editor.lineTextForBufferRow(row).match(/^\s*```/)
+      isstart = editor.lineTextForBufferRow(row).match(/^\s*```\w+/) && styleOk2(row)
+      isend = editor.lineTextForBufferRow(row).match(/^\s*```/) && styleOk2(row)
       if lookingforfirst
         if isstart
           startrow = row
