@@ -2,16 +2,16 @@
 
 styleOk = (row) ->
   editor = atom.workspace.getActiveTextEditor()
-  scope = editor.scopeDescriptorForBufferPosition([row,0]) 
-  !scope.scopes.some (text) -> 
+  scope = editor.scopeDescriptorForBufferPosition([row,0])
+  !scope.scopes.some (text) ->
     /^(markup.code|markup.raw|comment.block)/.test text
-     
+
 styleOk2 = (row) ->
   editor = atom.workspace.getActiveTextEditor()
-  scope = editor.scopeDescriptorForBufferPosition([row,0]) 
-  !scope.scopes.some (text) -> 
+  scope = editor.scopeDescriptorForBufferPosition([row,0])
+  !scope.scopes.some (text) ->
     /^comment.block/.test(text)
-   
+
 
 module.exports = MarkdownFolder =
   subscriptions: null
@@ -174,14 +174,14 @@ module.exports = MarkdownFolder =
             for linenr in [lastrowtofold..startrow]
               if editor.lineTextForBufferRow(linenr).match(/^#+\s/) && styleOk(linenr) # a heading
                 if lastrowtofold - linenr > 0
-                  ranges.push (new Range(new Point(linenr, 0), new Point(lastrowtofold, 0)))
+                  ranges.push (new Range(new Point(linenr, Infinity), new Point(lastrowtofold, Infinity)))
                 lastrowtofold = linenr - 1
             if lastrowtofold - startrow > 1
-              ranges.push (new Range(new Point(startrow, 0), new Point(lastrowtofold, 0)))
+              ranges.push (new Range(new Point(startrow, Infinity), new Point(lastrowtofold, Infinity)))
             if ranges.length > 0
               editor.setSelectedBufferRanges(ranges)
           else
-            editor.setSelectedBufferRange(new Range(new Point(startrow, 0), new Point(lastrowtofold, 0)))
+            editor.setSelectedBufferRange(new Range(new Point(startrow, Infinity), new Point(lastrowtofold, Infinity)))
           editor.foldSelectedLines()
         editor.setCursorBufferPosition(new Point(startrow, 0))
 
@@ -208,9 +208,9 @@ module.exports = MarkdownFolder =
         editor.unfoldBufferRow(row)
       if editor.lineTextForBufferRow(row).match(/^\s*```/) && styleOk2(row)
         if !shouldunfold
-          editor.setSelectedBufferRange(new Range(new Point(startrow, 0), new Point(row, 0)))
+          editor.setSelectedBufferRange(new Range(new Point(startrow, Infinity), new Point(row, Infinity)))
           editor.foldSelectedLines()
-          editor.moveUp()
+          editor.setCursorBufferPosition(new Point(startrow, 0))
         break
       row++
 
@@ -231,7 +231,7 @@ module.exports = MarkdownFolder =
       else
         if isend
           if action == 'fold'
-            editor.setSelectedBufferRange(new Range(new Point(startrow, 0), new Point(row, 0)))
+            editor.setSelectedBufferRange(new Range(new Point(startrow, Infinity), new Point(row, Infinity)))
             editor.foldSelectedLines()
           else
             for frow in [startrow..row]
