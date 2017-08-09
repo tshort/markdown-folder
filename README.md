@@ -1,3 +1,7 @@
+**NOTE: This package has been retired. It is no longer available through the Atom package manager. It no longer works right on recent releases of Atom.** 
+
+---
+
 # markdown-folder package
 
 Atom package that folds and unfolds markdown headings and fenced code blocks.
